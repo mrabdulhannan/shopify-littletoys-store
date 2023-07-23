@@ -1455,5 +1455,24 @@
         "info": "t:settings_schema.cart.settings.cart_drawer.collection.info"
       }
     ]
+  },
+  {
+    "name": "swatch color",
+    "settings": [
+      {
+        "type": "richtext",
+        "id": "colorSwatch",
+        "label": "Enter the color you want to be included in the swatch",
+        "default": "<p> heather-black: #3f3f3f, black: #2f2f2f, heather-gray: #c5c5c5, white: #bebeb<\/p>",
+        "info": " Use '-' if it is a two-word-color.Separate the color with comma. See default"
+      },
+      {
+        "type": "richtext",
+        "id": "colorImg",
+        "label": "Enter the image and then provide the name here you want to be included in the swatch",
+        "default": "<p> heather-black.jpg, black.png, heather-gray.gif, white.png<\/p>",
+        "info": "Use '-' if it is a two-word-color. File extension must match the file uploaded. Separate the image with comma. See default"
+      }
+    ]
   }
 ]

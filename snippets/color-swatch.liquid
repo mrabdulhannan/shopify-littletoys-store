@@ -1,0 +1,298 @@
+ {% comment %} Please enter your own personalization below. Change the values inside the quotation mark ' '. {% endcomment %}
+
+{% assign swatch_size = '3vw' %} {% comment %} Change the color swatch size below.{% endcomment %}
+{% assign swatch_shape = 'round-edge' %} {% comment %} Change the swatch shape. Use either 'round', 'square', 'rectangle' or 'round-edge'. {% endcomment %}
+{% assign option_name = 'Color' %} {% comment %} Assign the name of the option you have selected. It can be 'Colour' or '색상'. {% endcomment %}
+
+{% assign picker_type = picker_type %}
+{% assign img_link = white | file_url %}
+{% assign color_file = settings.colorSwatch | strip_html | prepend: '{' | append: '}' | downcase | parse_json %}
+{% assign img_file = settings.colorImg | strip_html | prepend: '{' | append: '}' | downcase | parse_json %}
+
+{%- unless product.has_only_default_variant -%}
+    {%- if picker_type == 'button' -%}
+        <variant-radios class="no-js-hidden" data-section="{{ section.id }}"
+                        data-url="{{ product.url }}" {{ block.shopify_attributes }}>
+            {%- for option in product.options_with_values -%}
+                <fieldset {% if option.name == option_name %} class="swatchComponent" style=" padding: 0;" {% else %} class="js product-form__input" style="border:none" {% endif %}>
+                    {% if option.name == option_name %}
+                        <legend class="form__label">{{ option.name }}</legend>
+                        <div class="swatchContainer">
+                            {% assign values = option.values %}
+                            {%- for value in option.values -%}
+                                <input class="inputColor"
+                                       name="{{ option.name }}"
+                                       value="{{ value | escape }}"
+                                       form="product-form-{{ section.id }}"
+                                       type="radio"
+                                       id="{{ section.id }}-{{ option.name }}-{{ forloop.index0 }}"
+                                       {% if option.selected_value == value %}checked{% endif %}>
+
+                                <label class="labelColor"
+                                       for="{{ section.id }}-{{ option.name }}-{{ forloop.index0 }}"
+                                       data-color="{{ value | downcase | replace: ' ', '-' }}"
+                                       style="
+                                       {% case swatch_shape %}
+                                           {% when 'round' %} border-radius: 50%; aspect-ratio: 1;
+                                           {% when 'square' %} aspect-ratio: 1;
+                                           {% when 'rectangle' %} height: calc({{swatch_size}} / 2);
+                                           {% when 'round-edge' %} border-radius: 15%; aspect-ratio: 1;
+                                       {% endcase %}">
+                                </label>
+                                <div class="infoColor">
+                                    <img src="" alt="" data-info-image="{{ value | downcase | replace: ' ', '-' }}">
+                                    {{ value | escape }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <legend class="form__label">{{ option.name }}</legend>
+                        {%- for value in option.values -%}
+                            <input type="radio" id="{{ section.id }}-{{ option.name }}-{{ forloop.index0 }}"
+                                   name="{{ option.name }}"
+                                   value="{{ value | escape }}"
+                                   form="product-form-{{ section.id }}"
+                                   {% if option.selected_value == value %}checked{% endif %}>
+                            <label for="{{ section.id }}-{{ option.name }}-{{ forloop.index0 }}">
+                                {{ value }}
+                            </label>
+                        {%- endfor -%}
+                    {% endif %}
+                </fieldset>
+            {% endfor -%}
+            <script type="application/json">
+{{ product.variants | json }}
+
+
+
+            </script>
+        </variant-radios>
+    {%- else -%}
+
+        <variant-selects class="no-js-hidden" data-section="{{ section.id }}"
+                         data-url="{{ product.url }}" {{ block.shopify_attributes }}>
+            {%- for option in product.options_with_values -%}
+                <fieldset class="swatchComponent"
+                          style=" padding: 0; {% if option.name != option_name %}display: none{% endif %}">
+                    {% if option.name == option_name %}
+                        <legend class="form__label">{{ option.name }}</legend>
+                        <div class="swatchContainer">
+                            {% assign values = option.values %}
+                            {%- for value in option.values -%}
+                                <input class="inputColor"
+                                       name="{{ option.name }}"
+                                       value="{{ value | escape }}"
+                                       form="product-form-{{ section.id }}"
+                                       type="radio"
+                                       id="{{ section.id }}-{{ option.name }}-{{ forloop.index0 }}"
+                                       {% if option.selected_value == value %}checked{% endif %}>
+                                <label class="labelColor"
+                                       for="{{ section.id }}-{{ option.name }}-{{ forloop.index0 }}"
+                                       data-color="{{ value | downcase | replace: ' ', '-' }}"
+                                       style="
+                                       {% case swatch_shape %}
+                                           {% when 'round' %} border-radius: 50%; aspect-ratio: 1;
+                                           {% when 'square' %} aspect-ratio: 1;
+                                           {% when 'rectangle' %} height: calc({{swatch_size}} / 2);
+                                           {% when 'round-edge' %} border-radius: 15%; aspect-ratio: 1;
+                                       {% endcase %}">
+                                </label>
+                                <div class="infoColor">
+                                    <img src="" alt="" data-info-image="{{ value | downcase | replace: ' ', '-' }}">
+                                    {{ value | escape }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </fieldset>
+                <div class="product-form__input product-form__input--dropdown"
+                     {% if option.name == option_name %}style="display: none"{% endif %}>
+                    <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+                        {{ option.name }}
+                    </label>
+                    <div class="select">
+                        <select id="Option-{{ section.id }}-{{ forloop.index0 }}"
+                                class="select__select"
+                                name="options[{{ option.name | escape }}]"
+                                form="{{ product_form_id }}">
+                            {%- for value in option.values -%}
+                                <option value="{{ value | escape }}"
+                                        {% if option.selected_value == value %}selected="selected"{% endif %}>
+                                    {{ value }}
+                                </option>
+                            {%- endfor -%}
+                        </select>
+                        {% render 'icon-caret' %}
+                    </div>
+                </div>
+            {%- endfor -%}
+            <script type="application/json">
+{{ product.variants | json }}
+
+
+
+            </script>
+        </variant-selects>
+    {%- endif -%}
+{%- endunless -%}
+<noscript class="product-form__noscript-wrapper-{{ section.id }}">
+    <div class="product-form__input{% if product.has_only_default_variant %} hidden{% endif %}">
+        <label class="form__label" for="Variants-{{ section.id }}">{{ 'products.product.product_variants' | t }}</label>
+        <div class="select">
+            <select name="id" id="Variants-{{ section.id }}" class="select__select" form="{{ product_form_id }}">
+                {%- for variant in product.variants -%}
+                    <option
+                            {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+                        {% if variant.available == false %}disabled{% endif %}
+                            value="{{ variant.id }}">
+                        {{ variant.title }}
+                        {%- if variant.available == false %} - {{ 'products.product.sold_out' | t }}{% endif %}
+                        - {{ variant.price | money | strip_html }}
+                    </option>
+                {%- endfor -%}
+            </select>
+            {% render 'icon-caret' %}
+        </div>
+    </div>
+</noscript>
+<script>
+    const path = window.location.pathname;
+    const variant = document.querySelector(`[data-url="${path}"]`);
+    const imgRaw = JSON.stringify("{{ img_file }}");
+    const imgSplit = imgRaw.split(/[,]/).map(col => col.replace(/[\"\s{}]/g, '')).map(s => s.split('.'));
+    const imgJSON = Object.fromEntries(imgSplit);
+
+    for (const img in imgJSON) {
+        const val = `${imgJSON[img]}`;
+        const swatchImg = variant.querySelector(`[data-color="${img}"]`);
+        const infoImg = variant.querySelector(`[data-info-image="${img}"]`);
+        const imgLink = '{{ img_link }}';
+
+        if (swatchImg) {
+            const imageName = `${img}.${val}`;
+            const assetUrl = imgLink.split('?')[0] + `${imageName}`;
+            swatchImg.style.backgroundImage = `url('${assetUrl}')`;
+
+            if (infoImg) {
+                infoImg.src = assetUrl;
+                infoImg.style.display = 'block';
+            }
+        }
+    }
+    console.log('This is for images:', imgJSON);
+
+    const colorRaw = JSON.stringify("{{ color_file }}");
+    const colorSplit = colorRaw.split(/[,]/).map(col => col.replace(/[\"\s{}]/g, '')).map(s => s.split(':'));
+    const colorJSON = Object.fromEntries(colorSplit);
+    const labels = document.querySelectorAll('.labelColor');
+
+    for (const color in colorJSON) {
+        const val = `${colorJSON[color]}`;
+        const swatchColor = variant.querySelector(`[data-color="${color}"]`);
+        const values = '{{ values }}';
+
+        if (swatchColor) {
+            swatchColor.style.backgroundColor = val;
+        }
+    }
+    console.log('This is for colors:', colorJSON);
+
+    labels.forEach((label) => {
+        if (label.style.backgroundColor == '') {
+            label.classList.add('no-background')
+        }
+    })
+
+    const optionName = '{{ option_name }}';
+    const radios = variant.querySelectorAll('.inputColor');
+    const select = variant.querySelector(`select[name='options[${optionName}]']`);
+
+    if (select) {
+        radios.forEach((elem) => {
+            elem.addEventListener("click", function (event) {
+                var item = event.target.value;
+                select.value = item;
+            });
+        });
+    }
+</script>
+<style>
+    fieldset {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none;
+    }
+
+    .swatchComponent {
+        display: flex;
+        margin: 5% 0;
+        box-sizing: border-box;
+        position: relative;
+        border: none;
+    }
+
+    .swatchContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .inputColor {
+        display: none;
+    }
+
+    .labelColor {
+        width: {{swatch_size}};
+        margin: 1%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        overflow: hidden;
+        transition: all .3s ease;
+    }
+
+    .no-background {
+        background: repeating-linear-gradient(45deg, #e8e4e4, #e8e4e4 5px, #fff -2px, #fff 9px);
+        background-position: center;
+        background-size: 5vw;
+    }
+
+    .labelColor:hover {
+        transform: scale(1.1);
+    }
+
+    .infoColor {
+        display: none;
+        width: 100%;
+        padding: 4%;
+        order: 999;
+        justify-content: flex-start;
+        align-items: center;
+        box-shadow: 0px 0px 5px rgb(0 0 0 / 80%);
+        border-radius: 5px;
+        margin-top: 20px;
+    }
+
+    .infoColor img {
+        width: 100px; /* size of the image in the description tab */
+        aspect-ratio: 1;
+        object-fit: cover;
+        overflow: hidden;
+        display: none;
+        margin-right: 20px;
+    }
+
+    .inputColor:checked + .labelColor + .infoColor {
+        display: flex;
+    }
+
+    .inputColor:checked + .labelColor {
+        outline: 2px solid;
+        border: 2px solid white;
+    }
+</style>
