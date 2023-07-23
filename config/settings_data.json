@@ -116,7 +116,7 @@
     "show_vendor": false,
     "show_cart_note": false,
     "cart_drawer_collection": "",
-    "colorImg": "<p>1.jpg,1b.jpg<\/p>",
+    "colorImg": "<p>icon-8copy.png<\/p>",
     "sections": {
       "main-password-header": {
         "type": "main-password-header",
