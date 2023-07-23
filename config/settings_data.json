@@ -116,7 +116,7 @@
     "show_vendor": false,
     "show_cart_note": false,
     "cart_drawer_collection": "",
-    "colorImg": "<p> heather-black.jpg, black.png, heather-gray.gif, white.png,<\/p><p>1.jpg<\/p>",
+    "colorImg": "<p>1.jpg,1b.jpg<\/p>",
     "sections": {
       "main-password-header": {
         "type": "main-password-header",
